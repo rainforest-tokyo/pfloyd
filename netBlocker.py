@@ -20,6 +20,8 @@ from netfilterqueue import NetfilterQueue
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
+from Logger import Logger
+
 #----------------------------
 # BlackList
 
@@ -70,10 +72,10 @@ class ChangeHandler(FileSystemEventHandler):
 
 #----------------------------
 # TCP/UDP Block
-
 # ip_info = {"ip":"192.168.0.32", "port":0, "protocol":""}
 def check_ip( ip_info ) :
     global blacklist
+    global logger
 
     for item in blacklist :
         ip=ipaddress.ip_address(u""+ip_info["ip"])
@@ -89,15 +91,21 @@ def check_ip( ip_info ) :
 
 def netblocker(pkt):
     packet = IP(pkt.get_payload())
-    result = check_ip( {"ip":packet.src, "port":0, "protocol":""} )
+    data = {"ip":packet.src, "port":0, "protocol":""}
+    result = check_ip( data )
     if result :
+        log.log( data )
         pkt.drop()
     else:
         pkt.accept()
 #----------------------------
 
-if __name__ == '__main__':
+def main(argv) :
+    global logger
+
     setup()
+
+    logger = Logger("/var/log/pfloyd.log", False)
 
     event_handler = ChangeHandler()
     observer = Observer()
@@ -114,4 +122,7 @@ if __name__ == '__main__':
 
     nfqueue.unbind()
     observer.join()
+
+if __name__ == '__main__':
+    main(sys.argv)
 
