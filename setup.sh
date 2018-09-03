@@ -1,1 +1,1 @@
-sudo iptables -I INPUT --protocol tcp --dport 20-50000 NFQUEUE --queue-num 1
+sudo iptables -I INPUT --protocol tcp --dport 20:50000 -j NFQUEUE --queue-num 1

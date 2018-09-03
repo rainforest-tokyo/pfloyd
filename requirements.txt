@@ -3,3 +3,4 @@ scapy==2.4.0
 geoip2==2.9.0
 elasticsearch==6.3.1
 NetfilterQueue==0.8.1
+configparser==3.5.0
