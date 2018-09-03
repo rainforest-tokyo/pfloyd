@@ -94,7 +94,9 @@ def netblocker(pkt):
     data = {"ip":packet.src, "port":0, "protocol":""}
     result = check_ip( data )
     if result :
-        log.log( data )
+        print( data )
+        sys.stdout.flush()
+        logger.log( data )
         pkt.drop()
     else:
         pkt.accept()
@@ -102,6 +104,9 @@ def netblocker(pkt):
 
 def main(argv) :
     global logger
+
+    print( '#### START ####' )
+    sys.stdout.flush()
 
     setup()
 
