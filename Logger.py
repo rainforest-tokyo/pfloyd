@@ -24,6 +24,7 @@ class Logger(object):
     def __init__(self, file, elastic):
         self.lock       = Lock()
         self.file       = file
+        self.elastic    = None
         if(elastic == True) :
             self.elastic    = ElasticConnector()
         #self.packet_dir = None
@@ -55,17 +56,16 @@ class Logger(object):
     def log(self, info):
         log     = None
 
-        with conn.lock:
-            remote  = info['ip']
-            protocol  = info['protocol']
-            log     = self.create_log(conn.id, 'accept', {
-                'client': {
-                    'remote':   { 'address': remote, 
-                        'geoip': { 'city': self.city_info(remote), 'asn': self.asn_info(remote)}
-                    },
-                    'protocol':    { 'protocol': protocol },
-                    'local':    { 'port': info['port'] }
-            } })
+        remote  = info['ip']
+        protocol  = info['protocol']
+        log     = self.create_log('accept', {
+            'client': {
+                'remote':   { 'address': remote, 
+                    'geoip': { 'city': self.city_info(remote), 'asn': self.asn_info(remote)}
+                },
+                'protocol':    { 'protocol': protocol },
+                'local':    { 'port': info['port'] }
+        } })
 
         self.append_log(log)
 
@@ -82,9 +82,8 @@ class Logger(object):
 
         self.append_line(line)
 
-    def create_log(self, id, type, hash = None):
+    def create_log(self, type, hash = None):
         hash = {} if hash is None else hash
-        hash['connection_id']   = id
         hash['datetime']        = str(datetime.datetime.now())
         hash['type']            = type
 

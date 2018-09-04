@@ -95,15 +95,19 @@ def netblocker(pkt):
     result = check_ip( data )
     if result :
         print( data )
-        sys.stdout.flush()
         logger.log( data )
+        sys.stdout.flush()
         pkt.drop()
     else:
+        sys.stdout.flush()
         pkt.accept()
 #----------------------------
 
 def main(argv) :
     global logger
+
+    filename = os.path.join( BASEDIR, TARGET_FILE )
+    load_blacklist(filename)
 
     print( '#### START ####' )
     sys.stdout.flush()
