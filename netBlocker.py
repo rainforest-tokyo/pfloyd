@@ -79,7 +79,8 @@ def check_ip( ip_info ) :
 
     for item in blacklist :
         ip=ipaddress.ip_address(u""+ip_info["ip"])
-        net=ipaddress.ip_network(u""+item["ip"])
+        #net=ipaddress.ip_network(u""+item["ip"])
+        net=ipaddress.ip_network(u""+item["ip"], False)
         if ip in net:
             if((ip_info["port"] != 0) and (ip_info["port"] not in blacklist["port"])) :
                 continue
