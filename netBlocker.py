@@ -82,12 +82,12 @@ def check_ip( ip_info ) :
         net=ipaddress.ip_network(u""+item["ip"])
         if ip in net:
             if((ip_info["port"] != 0) and (ip_info["port"] not in blacklist["port"])) :
-                return False
+                continue
             if((ip_info["protocol"] != "") and (ip_info["protocol"] != blacklist["protocol"])) :
-                return False
+                continue
             return True
-        else :
-            return False
+
+    return False
 
 def netblocker(pkt):
     packet = IP(pkt.get_payload())
